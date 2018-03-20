@@ -13,5 +13,10 @@
 			<artifactId>spring-boot-dubbo-starter</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>com.learn</groupId>
+			<artifactId>spring-boot-dubbo-common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>
