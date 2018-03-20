@@ -6,7 +6,9 @@ import org.springframework.context.annotation.Configuration;
 
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
+import com.alibaba.dubbo.config.spring.context.annotation.EnableDubbo;
 
+@EnableDubbo
 @Configuration
 public class SpringBootDubboStarter {
 
