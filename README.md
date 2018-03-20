@@ -1,1 +1,1 @@
-# framework bean operate 
+基础根目录，无任何功能
