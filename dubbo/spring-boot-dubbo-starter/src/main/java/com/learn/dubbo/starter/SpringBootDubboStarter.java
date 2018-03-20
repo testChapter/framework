@@ -10,7 +10,7 @@ import com.alibaba.dubbo.config.RegistryConfig;
 @Configuration
 public class SpringBootDubboStarter {
 
-	@Value("${spring.dubbo.applicationName:dubboApplication}")
+	@Value("${spring.dubbo.applicationName:${spring.application.name}}")
 	private String applicationName;
 
 	@Value("${spring.dubbo.registry.type:zookeeper}")
