@@ -6,13 +6,11 @@ import org.springframework.context.annotation.Configuration;
 
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
-import com.alibaba.dubbo.config.spring.context.annotation.EnableDubbo;
 
-@EnableDubbo
 @Configuration
 public class SpringBootDubboStarter {
 
-	@Value("${spring.dubbo.applicationName:${spring.application.name}}")
+	@Value("${spring.dubbo.applicationName:dubboApplication}")
 	private String applicationName;
 
 	@Value("${spring.dubbo.registry.type:zookeeper}")
