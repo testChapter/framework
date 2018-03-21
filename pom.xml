@@ -8,6 +8,7 @@
 	<modules>
 		<module>dubbo</module>
 		<module>cloud</module>
+		<module>util</module>
 	</modules>
 	
 	<parent>
