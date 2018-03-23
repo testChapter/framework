@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.alibaba.dubbo.config.ApplicationConfig;
+import com.alibaba.dubbo.config.ProtocolConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
 
 @Configuration
@@ -22,6 +23,9 @@ public class SpringBootDubboStarter {
 	@Value("${spring.dubbo.registry.port:2181}")
 	private String registryPort;
 
+	@Value("${spring.dubbo.protocol.port:20880}")
+	private int protocolPort;
+
 	private static String SEPARATOR_BETWEEN_TYPE_AND_IP = "://";
 
 	private static String SEPARATOR_BETWEEN_IP_AND_PORT = ":";
@@ -37,6 +41,12 @@ public class SpringBootDubboStarter {
 		registryUriBuilder.append(SEPARATOR_BETWEEN_TYPE_AND_IP).append(registryIp)
 				.append(SEPARATOR_BETWEEN_IP_AND_PORT).append(registryPort);
 		return new RegistryConfig(registryUriBuilder.toString());
+	}
+
+	@Bean
+	ProtocolConfig dubboProtocolConfig() {
+		ProtocolConfig config = new ProtocolConfig(applicationName, protocolPort);
+		return config;
 	}
 
 }
