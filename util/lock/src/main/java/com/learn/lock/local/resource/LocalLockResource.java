@@ -1,19 +1,21 @@
 package com.learn.lock.local.resource;
 
-import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.learn.lock.LockResource;
 
 public class LocalLockResource implements LockResource {
 
-	private static Map<String, Object> lockObjectMap = new ConcurrentHashMap<>();
+	private static Map<String, ReentrantLock> lockObjectMap = new ConcurrentHashMap<>();
 
 	@Override
 	public boolean getLock(String lockKey) {
-		Object object = new Object();
-		Object mapObject = lockObjectMap.putIfAbsent(lockKey, object);
+		ReentrantLock lock = new ReentrantLock(true);
+		ReentrantLock mapObject = lockObjectMap.putIfAbsent(lockKey, lock);
 		if (mapObject == null) {
 			return true;
 		} else {
@@ -24,38 +26,92 @@ public class LocalLockResource implements LockResource {
 	@Override
 	public Boolean unLock(String lockKey) {
 		try {
-			Object mapObject = lockObjectMap.get(lockKey);
-			mapObject.notifyAll();
-			mapObject = null;
-			lockObjectMap.remove(lockKey);
+			ReentrantLock mapObject = lockObjectMap.get(lockKey);
+			if (mapObject.isHeldByCurrentThread()) {
+				mapObject.unlock();
+				if (mapObject.getQueueLength() == 0) {
+					lockObjectMap.remove(lockKey);
+				}
+			}
 			return true;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
 
 	@Override
 	public boolean getLock(String lockKey, long waitTimeInMillisecond) {
-		boolean flag = true;
-		Object object = new Object();
-		Object mapObject = lockObjectMap.putIfAbsent(lockKey, object);
+		ReentrantLock object = new ReentrantLock(true);
+		ReentrantLock mapObject = lockObjectMap.putIfAbsent(lockKey, object);
 		if (mapObject == null) {
-			return true;
+			return object.tryLock();
 		} else {
-			synchronized (mapObject) {
-				
+			try {
+				return mapObject.tryLock(waitTimeInMillisecond, TimeUnit.MILLISECONDS);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				return false;
 			}
 		}
-		try {
-			
-			object.wait(waitTimeInMillisecond);
-			return false;
-			
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
+	}
+
+	public static void main(String[] args) {
+		final String lockKey = "getKey";
+		LocalLockResource lock = new LocalLockResource();
+		CountDownLatch latch = new CountDownLatch(3);
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				latch.countDown();
+				try {
+					latch.await();
+					if (lock.getLock(lockKey, 300)) {
+						Thread.sleep(200);
+						lock.unLock(lockKey);
+					} else {
+						System.out.println("Thread " + Thread.currentThread().getName() + " get lock failed");
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}, "T1").start();
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				latch.countDown();
+				try {
+					latch.await();
+					if (lock.getLock(lockKey, 300)) {
+						Thread.sleep(200);
+						lock.unLock(lockKey);
+					} else {
+						System.out.println("Thread " + Thread.currentThread().getName() + " get lock failed");
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}, "T2").start();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				latch.countDown();
+				try {
+					latch.await();
+					if (lock.getLock(lockKey, 300)) {
+						Thread.sleep(200);
+						lock.unLock(lockKey);
+					} else {
+						System.out.println("Thread " + Thread.currentThread().getName() + " get lock failed");
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}, "T3").start();
 	}
 
 }
