@@ -14,5 +14,4 @@ public class SpringBootDubboProviderApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SpringBootDubboProviderApplication.class, args);
 	}
-
 }

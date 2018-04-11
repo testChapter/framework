@@ -19,6 +19,7 @@ public class TestServiceImpl implements TestService {
 
 	@Override
 	public String sayHello(String name) throws BaseException {
+		System.out.println(name);
 		if ("exception".equals(name)) {
 			throw new BaseException("baseException", "数据错误");
 		}

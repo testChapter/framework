@@ -1,6 +1,8 @@
 package com.learn.dubbo.starter;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,16 +28,23 @@ public class SpringBootDubboStarter {
 	@Value("${spring.dubbo.protocol.port:20880}")
 	private int protocolPort;
 
+	@Value("${spring.dubbo.protocol.name:dubbo}")
+	private String protocolName;
+	
+	
+
 	private static String SEPARATOR_BETWEEN_TYPE_AND_IP = "://";
 
 	private static String SEPARATOR_BETWEEN_IP_AND_PORT = ":";
 
 	@Bean
+	@ConditionalOnProperty(havingValue = "true", name = "spring.dubbo.applicationName")
 	ApplicationConfig dubboApplicationConfig() {
 		return new ApplicationConfig(applicationName);
 	}
 
 	@Bean
+	@ConditionalOnBean(ApplicationConfig.class)
 	RegistryConfig dubboRegistryConfig() {
 		StringBuilder registryUriBuilder = new StringBuilder(registryType);
 		registryUriBuilder.append(SEPARATOR_BETWEEN_TYPE_AND_IP).append(registryIp)
@@ -44,8 +53,9 @@ public class SpringBootDubboStarter {
 	}
 
 	@Bean
+	@ConditionalOnBean(RegistryConfig.class)
 	ProtocolConfig dubboProtocolConfig() {
-		ProtocolConfig config = new ProtocolConfig(applicationName, protocolPort);
+		ProtocolConfig config = new ProtocolConfig(protocolName, protocolPort);
 		return config;
 	}
 
