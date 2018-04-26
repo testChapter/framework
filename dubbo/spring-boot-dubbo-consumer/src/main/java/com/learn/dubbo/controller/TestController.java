@@ -22,7 +22,9 @@ public class TestController {
 	public String sayHello(String name) {
 		String result = null;
 		try {
+			long start = System.currentTimeMillis();
 			result = testService.sayHello(name);
+			System.out.println("cost time is " + (System.currentTimeMillis() - start));
 		} catch (BaseException e) {
 			e.printStackTrace();
 		}
