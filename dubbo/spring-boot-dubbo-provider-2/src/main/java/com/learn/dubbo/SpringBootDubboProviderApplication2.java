@@ -5,9 +5,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.alibaba.dubbo.config.spring.context.annotation.EnableDubbo;
+import com.learn.connector.annotation.EnableCloudDubboConnector;
 
-@SpringBootApplication
 @EnableDubbo
+@SpringBootApplication
+@EnableCloudDubboConnector
 @MapperScan("com.learn.dubbo.mapper")
 public class SpringBootDubboProviderApplication2 {
 
