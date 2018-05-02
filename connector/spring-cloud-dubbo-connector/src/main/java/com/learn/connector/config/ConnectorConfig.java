@@ -1,5 +1,5 @@
 package com.learn.connector.config;
 
-public abstract class ConnectorConfig {
+public class ConnectorConfig {
 
 }
