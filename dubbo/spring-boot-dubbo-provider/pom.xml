@@ -14,14 +14,19 @@
 			<artifactId>spring-boot-dubbo-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.alicp.jetcache/jetcache-starter-redis -->
+
 		<dependency>
 			<groupId>com.alicp.jetcache</groupId>
 			<artifactId>jetcache-starter-redis</artifactId>
 			<version>2.4.4</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+		<dependency>
+			<groupId>com.alicp.jetcache</groupId>
+			<artifactId>jetcache-redis-lettuce4</artifactId>
+			<version>2.4.4</version>
+		</dependency>
+
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>

@@ -1,11 +1,14 @@
 package com.learn.dubbo.service.impl;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alicp.jetcache.Cache;
+import com.alicp.jetcache.anno.CacheRefresh;
+import com.alicp.jetcache.anno.CacheType;
 import com.alicp.jetcache.anno.Cached;
 import com.alicp.jetcache.anno.CreateCache;
 import com.learn.dubbo.bean.Test;
@@ -20,11 +23,12 @@ public class TestServiceImpl implements TestService {
 	@Autowired
 	TestMapper testMapper;
 	
-	@CreateCache(expire = 3600)
-	private Cache<Long,String> stringCache;
+	@CreateCache(expire = 100, cacheType = CacheType.BOTH, localLimit = 50)
+	Cache<Long,String> cache;
 
 	@Override
-	@Cached(name = "TestService.sayHello", expire = 3600)
+	@Cached(name = "TestService.sayHello", expire = 3600,cacheType = CacheType.BOTH)
+	@CacheRefresh(refresh = 1800, stopRefreshAfterLastAccess = 3600, timeUnit = TimeUnit.SECONDS)
 	public String sayHello(String name) throws BaseException {
 		System.out.println(name);
 		if ("exception".equals(name)) {
@@ -33,7 +37,6 @@ public class TestServiceImpl implements TestService {
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return "hello " + name + "!";
